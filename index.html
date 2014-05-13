@@ -1,0 +1,89 @@
+<html>
+    <title>OOP basics</title>
+    <body>
+        <script>
+
+            // prototype: another way to make a class
+            //anytime you want a new instance, it will point to the prototype
+            //it will post to same property, unless you change it
+            //01: Make prototype class
+
+            //Constructor function
+            //--Convention: Upper case letter to identity that it is a class
+
+            //this is a class: can have proprities, functions
+            function Gladiator (name, attack, defense, hitPoints)
+            {
+                //this = object, new gladitor we're creating
+                //.name, .attack etc = parameters we're creating
+                this.name = name;
+                this.attack = attack;
+                this.defense = defense;
+                this.hitPoints = hitPoints;
+                this.weapon = "sword";
+                Gladiator.instances++;
+            }
+
+            //static in JS
+            Gladiator.instances = 0;
+
+            //every instance created will get a copy of this
+            Gladiator.prototype.sayName = function()
+            {
+                //portable
+                //this is created only once in RAM
+                 console.log("Hello, my name is " + this.name);
+            }
+
+            Gladiator.instances
+            //02: Add property
+            Gladiator.prototype.weapon = "sword";
+            //-you can change the function at runtime
+            // Gladiator.prototype.weapon = "cow" (in the console)
+
+            /*another version of factory pattern
+             * more efficient gladiator instance
+             * make sure properties as functions are better utilized
+             */
+
+            function makeGladiatorv2 (name, attack, defense, hitPoints)
+            {
+                //new function as object
+                var instance = new Gladiator(name, attack, defense, hitPoints);
+                return instance;
+            }
+
+            //factory pattern
+            //02: Make factory pattern
+            function makeGladiator(name, attack, defense, hitPoints)
+            {
+                //this loads each time we instance a new object in RAM
+                return {name: name,
+                        attack: attack,
+                        defense: defense,
+                        hitPoints: hitPoints,
+                            sayName: function()
+                            {
+                                console.log("Hello, my name is " + this.name);
+                            }
+                       };
+            }
+
+            // use second factory pattern
+            var jesse = makeGladiatorv2("Jesse", 10, 12, 10);
+            var john = makeGladiatorv2("John", 12, 10, 12);
+
+
+            //basic create objects
+            var iulita = { name: "Iulita", attack: 10, defense: 12, hitPoints: 10, sayName: function()
+                          {
+                          console.log("Hello, my name is " + this.name);
+                         }};
+
+            var isolde = { name: "Isolde", attack: 12, defense: 12, hitPoints: 10, sayName: function()
+                          {
+                          console.log("Hello, my name is " + this.name);
+                         }};
+        </script>
+    </body>
+</html>
