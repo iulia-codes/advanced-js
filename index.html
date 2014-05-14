@@ -119,6 +119,35 @@
                        };
             }
 
+            // make class that inherits our class
+            // create simple Weapon function
+
+            function Weapon(howManyDie, typeOfDie)
+            {
+                this.howManyDie = howManyDie;
+                this.typeOfDie = typeOfDie;
+            }
+
+            //make new class: human defaults to no weapon (they have fists)
+            function Human(name, attack, defense, hitPoints)
+            {
+                this.name = name;
+                this.attack = attack;
+                this.defense = defense;
+                this.hitPoints = hitPoints;
+                this.weapon = null;
+            }
+
+            //give human ability to extend from gladiator
+            //inheritance type one (class way)
+
+
+            Human.prototype = new Gladiator();
+            Human.prototype.constructor = Human;
+
+
+            //new class: Human with same parameters as gladiator
+
             // use second factory pattern
             var jesse = makeGladiatorv2("Jesse", 10, 12, 10);
             var john = makeGladiatorv2("John", 12, 10, 12);
