@@ -3,6 +3,8 @@
     <body>
         <script>
 
+            var arena = [];
+
             // prototype: another way to make a class
             //anytime you want a new instance, it will point to the prototype
             //it will post to same property, unless you change it
@@ -139,14 +141,25 @@
                 this.hitPoints = hitPoints;
                 this.weapon = Weapon (1,1);
             }
+            //Note: all classes in JS extend from Object, unless you tell it to extend from something else (like below)
+            //  Human.prototype = new Gladiator();
+            //overwrite the constructor (default constructor was gladiator)
+            //Human.prototype.constructor = Human;
+
+            //another way for creating a Gladiator
+            //ECMA 5 option; not recommended
+            Human.prototype = Object.create(Gladiator);
+            // then: jesse: still normal object
+            // but: jesse is also instanceOf Human
+            // but: gladitor funciton doesn't get called
+            // jesse.constructor: points to Human constructor
+            //what's missing? no way to create supermethods?
 
             //give human ability to extend from gladiator
             //inheritance type one (class way)
 
 
-            Human.prototype = new Gladiator();
-            //overwrite the constructor (default constructor was gladiator)
-            Human.prototype.constructor = Human;
+
 
             // add Animal class
             // has a bite property
@@ -164,6 +177,70 @@
             //overwrite the constructor (default constructor was gladiator)
             Animal.prototype.constructor = Animal;
 
+            //override
+            Animal.prototype.getRandomTargetInArena = function (arena)
+            {
+                var myIndex = arena.indexOf(this);
+                var targetArray = arena.concat;
+                targetArray.splice(myIndex,1);
+                //get a random person in arena to attack them
+                //var randomIndex = Math.Floor(math.random() * targetArray.length);
+                //but we modify it so that we sort it by those who are hurt the most
+
+                //lowest hit points to front of the array
+                //first target is the one with lowest HP
+                //this is how an animal attacks someone in arrena
+                var sortByLowestHitPoints = function (a,b)
+                {
+                    if (a.hitPoints > b.hitPoints)
+                    {
+                        return 1;
+                    }
+                    else if (a.hitPoints < b.hitPoints)
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                targetArray.sort(sortByLowestHitPoints);
+                return targetArray[randomIndex];
+            }
+
+             //attack strongest person in the arena
+            Human.prototype.getRandomTargetInArena = function (arena)
+            {
+                var myIndex = arena.indexOf(this);
+                var targetArray = arena.concat;
+                targetArray.splice(myIndex,1);
+                //get a random person in arena to attack them
+                //var randomIndex = Math.Floor(math.random() * targetArray.length);
+                //but we modify it so that we sort it by those who are hurt the most
+
+                //lowest hit points to front of the array
+                //first target is the one with lowest HP
+                //this is how an animal attacks someone in arrena
+                var sortByHighestHitPoints = function (a,b)
+                {
+                    if (a.hitPoints > b.hitPoints)
+                    {
+                        return -1;
+                    }
+                    else if (a.hitPoints < b.hitPoints)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                targetArray.sort(sortByHighestHitPoints);
+                return targetArray[randomIndex];
+            }
+
             // use second factory pattern
             //change the persons to be humans
             var jesse = new Human("Jesse", 10, 12, 10);
@@ -174,6 +251,8 @@
             // we do not modify his weapon
             karl.weapon = new Weapon(2,6);
 
+            //create arena
+            arena.push(jesse, john, karl);
 
             //basic create objects
             var iulita = { name: "Iulita", attack: 10, defense: 12, hitPoints: 10, sayName: function()
@@ -185,6 +264,11 @@
                           {
                           console.log("Hello, my name is " + this.name);
                          }};
+
+
+            //JS composition = put a things or many things inside it
+            // in our case, our weapon class was inside the gladiator class
+            //JS is functional language not OOP based
 
         </script>
     </body>
