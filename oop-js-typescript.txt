@@ -1,0 +1,52 @@
+Typescript compiles into Javascript and generates JS that can be used cross browser.
+
+Typescript missed ability to import them and namespace them correctly but it generates Javascript nicely, crossbrowser.
+
+
+class Weapon
+{
+	constructor(public howMany, public whatType)
+	{}
+}
+
+class Gladiator
+{
+	static instances:number = 0;
+	//property weapon
+	weapon;
+	constructor(public name,
+				public attack,
+				public defense,
+				public hitPoints)
+	{
+		this.weapon = null;
+	}
+	
+	//add roll function
+	//runs only for prototype
+	roll (howMany, whatType):number
+	{
+		//todo
+		return 0;
+	}
+}
+
+class Human extends Gladiator
+{
+		
+	constructor(public name,
+				public attack,
+				public defense,
+				public hitPoints)
+	{
+		super(name, attack, defense, hitPoints);
+		this.weapon = new Weapon (1,1);
+	}
+	
+	roll(howMany, whatType)
+	{
+		var roll = super.roll(howMany, whatType);
+		roll = roll + 1;
+		return roll;
+	}
+}
