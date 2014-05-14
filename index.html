@@ -54,7 +54,8 @@
             //applyDamage function
             Gladiator.prototype.applyDamage = function (theThingWeHit)
             {
-                var roll = this.roll (1,8);
+                //now it uses the weapon to apply damage
+                var roll = this.roll (this.weapon.howManyDie, this.weapon.typeofdie);
                 roll = roll + this.attack;
                 thePersonWeHit.hitPoints = theThingWeHit.hitPoints - roll;
                 return roll;
@@ -129,13 +130,14 @@
             }
 
             //make new class: human defaults to no weapon (they have fists)
+            // modify the weapon: add fork
             function Human(name, attack, defense, hitPoints)
             {
                 this.name = name;
                 this.attack = attack;
                 this.defense = defense;
                 this.hitPoints = hitPoints;
-                this.weapon = null;
+                this.weapon = Weapon (1,1);
             }
 
             //give human ability to extend from gladiator
@@ -143,14 +145,34 @@
 
 
             Human.prototype = new Gladiator();
+            //overwrite the constructor (default constructor was gladiator)
             Human.prototype.constructor = Human;
 
-
+            // add Animal class
+            // has a bite property
+            function Animal (name, attack, defense, hitPoints)
+            {
+                this.name = name;
+                this.attack = attack;
+                this.defense = defense;
+                this.hitPoints = hitPoints;
+                this.weapon = Weapon (1,2);
+            }
             //new class: Human with same parameters as gladiator
 
+              Animal.prototype = new Gladiator();
+            //overwrite the constructor (default constructor was gladiator)
+            Animal.prototype.constructor = Animal;
+
             // use second factory pattern
-            var jesse = makeGladiatorv2("Jesse", 10, 12, 10);
-            var john = makeGladiatorv2("John", 12, 10, 12);
+            //change the persons to be humans
+            var jesse = new Human("Jesse", 10, 12, 10);
+            var john = new Human("John", 12, 10, 12);
+
+            //karl is a bear, y0
+            var karl = new Animal ("Karl", 14, 10, 14);
+            // we do not modify his weapon
+            karl.weapon = new Weapon(2,6);
 
 
             //basic create objects
@@ -163,6 +185,7 @@
                           {
                           console.log("Hello, my name is " + this.name);
                          }};
+
         </script>
     </body>
 </html>
