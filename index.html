@@ -24,8 +24,21 @@
                 Gladiator.instances++;
             }
 
+            Gladiator.prototype.roll = function(howMany, whatType)
+            {
+                var total = 0;
+                for (var i=0; i<howMany; i++)
+                {
+                    var result = Math.round(Math.random() );
+                    total = total+result;
+                }
+                return total;
+            }
+             //inheritance example
+            /*
             //static in JS
             Gladiator.instances = 0;
+
 
             //every instance created will get a copy of this
             Gladiator.prototype.sayName = function()
@@ -35,7 +48,8 @@
                  console.log("Hello, my name is " + this.name);
             }
 
-            Gladiator.instances
+            */
+
             //02: Add property
             Gladiator.prototype.weapon = "sword";
             //-you can change the function at runtime
