@@ -24,16 +24,52 @@
                 Gladiator.instances++;
             }
 
+            //RollDice function
             Gladiator.prototype.roll = function(howMany, whatType)
             {
                 var total = 0;
                 for (var i=0; i<howMany; i++)
                 {
-                    var result = Math.round(Math.random() );
+                    var result = Math.round(Math.random() * whatType );
                     total = total+result;
                 }
                 return total;
             }
+
+            //AttackTarget function
+            Gladiator.prototype.attackTarget = function (theTargetWereAttacking)
+            {
+                var attackRoll = this.roll (1,20);
+                attackRoll = attackRoll + this.attack;
+                if (attackRoll >=theTargetWereAttacking.defense)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            };
+
+            //applyDamage function
+            Gladiator.prototype.applyDamage = function (theThingWeHit)
+            {
+                var roll = this.roll (1,8);
+                roll = roll + this.attack;
+                thePersonWeHit.hitPoints = theThingWeHit.hitPoints - roll;
+                return roll;
+            }
+
+            //get random target in arena function
+            Gladiator.prototype.getRandomTargetInArena = function (arena)
+            {
+                var myIndex = arena.indexOf(this);
+                var targetArray = arena.concat;
+                targetArray.splice(myIndex,1);
+                var randomIndex = Math.Floor(math.random() * targetArray.length);
+                return targetArray[randomIndex];
+            }
+
              //inheritance example
             /*
             //static in JS
