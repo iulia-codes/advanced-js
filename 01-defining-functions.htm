@@ -1,0 +1,54 @@
+<html>
+	<body>
+		<script type="text/javascript">
+
+			// 01. What type can we define functions?
+			function isNimble(){ return true; }
+			var canFly = function(){ return true; };
+			window.isDeadly = function(){ return true; };
+			log(isNimble, canFly, isDeadly);
+
+			/* Result 01
+			 LOG function isNimble(){ return true; } function (){ return true; } function (){ return true; }
+			*/
+
+			//02.Does the order of function definition matter?
+			var canFly = function(){ return true; };
+			window.isDeadly = function(){ return true; };
+			assert( isNimble() && canFly() && isDeadly(), "Still works, even though isNimble is moved." );
+			function isNimble(){ return true; }
+
+			/* Result 02
+			 PASS Still works, even though isNimble is moved.
+			*/
+
+			//03. Where can assignments be accessed?
+			assert( typeof canFly == "undefined", "canFly doesn't get that benefit." );
+			assert( typeof isDeadly == "undefined", "Nor does isDeadly." );
+			var canFly = function(){ return true; };
+			window.isDeadly = function(){ return true; };
+
+			/* Result 03
+				PASS canFly doesn't get that benefit.
+				PASS Nor does isDeadly.
+			*/
+
+			//04. Can functions be defined below return statements?
+			function stealthCheck(){
+				assert( stealth(), "We'll never get below the return, but that's OK!" );
+
+				return stealth();
+
+				function stealth(){ return true; }
+			}
+
+			stealthCheck();
+			/* Result 04
+				PASS We'll never get below the return, but that's OK!
+			*/
+
+
+
+		</script>
+	</body>
+</html>

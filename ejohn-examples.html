@@ -1,0 +1,225 @@
+<html>
+    <head>
+        <title> EJohn tutorials</title>
+    </head>
+    <body>
+        <script>
+            /*
+            *   STARTING POINT
+            */
+
+            //#3: Some helper methods that we have
+            assert( true, "I'll pass." );
+            assert( "truey", "So will I." );
+            assert( false, "I'll fail." );
+            assert( null, "So will I." );
+            log( "Just a simple log", "of", "values.", true );
+            error( "I'm an error!" );
+
+            //#5: Defining functions:
+            function isNimble(){ return true; }
+            var canFly = function(){ return true; };
+            window.isDeadly = function(){ return true; };
+            log(isNimble, canFly, isDeadly);
+
+            //#6: Does the order of function definition matter?
+            var canFly = function(){ return true; };
+            window.isDeadly = function(){ return true; };
+            assert( isNimble() && canFly() && isDeadly(), "Still works, even though isNimble is moved." );
+            function isNimble(){ return true; }
+
+            //#7: Where can assignments be accessed?
+            assert( typeof canFly == "undefined", "canFly doesn't get that benefit." );
+            assert( typeof isDeadly == "undefined", "Nor does isDeadly." );
+            var canFly = function(){ return true; };
+            window.isDeadly = function(){ return true; };
+
+            //#8: Can functions be defined below return statements?
+            function stealthCheck(){
+                assert( stealth(), "We'll never get below the return, but that's OK!" );
+                return stealth();
+                function stealth(){ return true; }
+            }
+
+            stealthCheck();
+
+            /*
+            *   NAMED FUNCTIONS
+            */
+            //#10: We can refer to a function, within itself, by its name.
+            function yell(n){
+                return n > 0 ? yell(n-1) + "a" : "hiy";
+            }
+            assert( yell(4) == "hiyaaaa", "Calling the function by itself comes naturally." );
+
+            //#11: What is the name of a function?
+            var ninja = function myNinja(){
+              assert( ninja == myNinja, "This function is named two things - at once!" );
+            };
+
+            ninja();
+            assert( typeof myNinja == "undefined", "But myNinja isn't defined outside of the function." );
+            log( ninja );
+
+            //#12: We can even do it if we're an anonymous function that's an object property.
+            var ninja = {
+              yell: function(n){
+                return n > 0 ? ninja.yell(n-1) + "a" : "hiy";
+              }
+            };
+            assert( ninja.yell(4) == "hiyaaaa", "A single object isn't too bad, either." );
+
+            //#13: But what happens when we remove the original object?
+            var ninja = {
+              yell: function(n){
+                return n > 0 ? ninja.yell(n-1) + "a" : "hiy";
+              }
+            };
+            assert( ninja.yell(4) == "hiyaaaa", "A single object isn't too bad, either." );
+
+            var samurai = { yell: ninja.yell };
+            var ninja = null;
+
+            try {
+              samurai.yell(4);
+            } catch(e){
+              assert( false, "Uh, this isn't good! Where'd ninja.yell go?" );
+            }
+
+
+            /* Result:
+             1. PASS A single object isn't too bad, either.
+             2. FAIL Uh, this isn't good! Where'd ninja.yell go?
+            */
+
+
+            //#14: Let's give the anonymous function a name!
+            var ninja = {
+              yell: function yell(n){
+                return n > 0 ? yell(n-1) + "a" : "hiy";
+              }
+            };
+            assert( ninja.yell(4) == "hiyaaaa", "Works as we would expect it to!" );
+
+            var samurai = { yell: ninja.yell };
+            var ninja = {};
+            assert( samurai.yell(4) == "hiyaaaa", "The method correctly calls itself." );
+
+            /* Result:
+             1.PASS Works as we would expect it to!
+             2.PASS The method correctly calls itself.
+            */
+
+
+            //#15: What if we don't want to give the function a name?
+            var ninja = {
+              yell: function(n){
+                return n > 0 ? arguments.callee(n-1) + "a" : "hiy";
+              }
+            };
+            assert( ninja.yell(4) == "hiyaaaa", "arguments.callee is the function itself." );
+            /* Result:
+             1.PASS arguments.callee is the function itself.
+            */
+
+            /*
+            *   FUNCTIONS AS OBJECTS
+            */
+            //#17: How similar are functions and objects?
+            var obj = {};
+            var fn = function(){};
+            assert( obj && fn, "Both the object and function exist." );
+            /* Result:
+             1. PASS Both the object and function exist.
+            */
+
+            //#18: How similar are functions and objects?
+            var obj = {};
+            var fn = function(){};
+            obj.prop = "some value";
+            fn.prop = "some value";
+            assert( obj.prop == fn.prop, "Both are objects, both have the property." );
+              /* Result:
+             1.PASS Both are objects, both have the property.
+            */
+
+
+            //#19: Is it possible to cache the return results from a function?
+            function getElements( name ) {
+              var results;
+
+              if ( getElements.cache[name] ) {
+                results = getElements.cache[name];
+              } else {
+                results = document.getElementsByTagName(name);
+                getElements.cache[name] = results;
+              }
+
+              return results;
+            }
+            getElements.cache = {};
+
+            log( "Elements found: ", getElements("pre").length );
+            log( "Cache found: ", getElements.cache.pre.length );
+            /* Result:
+            - yes it is possible
+             1.LOG Elements found: 76
+             2.LOG Cache found: 76
+            */
+
+
+            //#20: QUIZ: Can you cache the results of this function?
+            function isPrime( num ) {
+              var prime = num != 1; // Everything but 1 can be prime
+              for ( var i = 2; i < num; i++ ) {
+                if ( num % i == 0 ) {
+                  prime = false;
+                  break;
+                }
+              }
+              return prime;
+            }
+
+            assert( isPrime(5), "Make sure the function works, 5 is prime." );
+            assert( isPrime.cache[5], "Is the answer cached?" );
+            /* Result:
+            - no it is not possible, but why?
+            1.PASS Make sure the function works, 5 is prime.
+            2.ERROR Cannot read property '5' of undefined
+            */
+
+
+            //#21: One possible way to cache the results:
+            function isPrime( num ) {
+              if ( isPrime.cache[ num ] != null )
+                return isPrime.cache[ num ];
+
+              var prime = num != 1; // Everything but 1 can be prime
+              for ( var i = 2; i < num; i++ ) {
+                if ( num % i == 0 ) {
+                  prime = false;
+                  break;
+                }
+              }
+
+              isPrime.cache[ num ] = prime
+
+              return prime;
+            }
+
+            isPrime.cache = {};
+
+            assert( isPrime(5), "Make sure the function works, 5 is prime." );
+            assert( isPrime.cache[5], "Make sure the answer is cached." );
+
+               /* Result:
+            - no it is not possible, but why?
+            1.PASS Make sure the function works, 5 is prime.
+            2.ERROR Cannot read property '5' of undefined
+            */
+
+
+
+        </script>
+    </body>
+</html>
