@@ -1,0 +1,94 @@
+<html>
+	<body>
+		<script type="text/javascript">
+
+			// 01. We can refer to a function, within itself, by its name.
+			function yell(n){
+				return n > 0 ? yell(n-1) + "a" : "hiy";
+			}
+			assert( yell(4) == "hiyaaaa", "Calling the function by itself comes naturally." );
+			/* Result 01
+			 PASS Calling the function by itself comes naturally.
+			*/
+
+
+			//02. What is the name of a function?
+			var ninja = function myNinja(){
+				assert( ninja == myNinja, "This function is named two things - at once!" );
+			};
+			ninja();
+			assert( typeof myNinja == "undefined", "But myNinja isn't defined outside of the function." );
+			log( ninja );
+			/* Result 02
+			 1.PASS This function is named two things - at once!
+			 2.PASS But myNinja isn't defined outside of the function.
+			 3.LOG function myNinja(){ assert( ninja == myNinja, "This function is named two things - at once!" ); }
+			*/
+
+
+			//02. We can even do it if we're an anonymous function that's an object property.
+			var ninja = {
+				yell: function(n){
+					return n > 0 ? ninja.yell(n-1) + "a" : "hiy";
+				}
+			};
+			assert( ninja.yell(4) == "hiyaaaa", "A single object isn't too bad, either." );
+			/* Result 02
+			 1.PASS A single object isn't too bad, either.
+		  */
+
+			//03. But what happens when we remove the original object?
+			var ninja = {
+				yell: function(n){
+					return n > 0 ? ninja.yell(n-1) + "a" : "hiy";
+				}
+			};
+			assert( ninja.yell(4) == "hiyaaaa", "A single object isn't too bad, either." );
+
+			var samurai = { yell: ninja.yell };
+			var ninja = null;
+
+			try {
+				samurai.yell(4);
+			} catch(e){
+				assert( false, "Uh, this isn't good! Where'd ninja.yell go?" );
+			}
+			/* Result 03
+			1.PASS A single object isn't too bad, either.
+			2.FAIL Uh, this isn't good! Where'd ninja.yell go?
+		  */
+
+
+			//04. Let's give the anonymous function a name!
+			var ninja = {
+				yell: function yell(n){
+					return n > 0 ? yell(n-1) + "a" : "hiy";
+				}
+			};
+			assert( ninja.yell(4) == "hiyaaaa", "Works as we would expect it to!" );
+
+			var samurai = { yell: ninja.yell };
+			var ninja = {};
+			assert( samurai.yell(4) == "hiyaaaa", "The method correctly calls itself." );
+			/* Result 04
+			1.PASS Works as we would expect it to!
+			2.PASS The method correctly calls itself.
+		  */
+
+			//05. What if we don't want to give the function a name?
+			var ninja = {
+				yell: function(n){
+					return n > 0 ? arguments.callee(n-1) + "a" : "hiy";
+				}
+			};
+			assert( ninja.yell(4) == "hiyaaaa", "arguments.callee is the function itself." );
+			/* Result 05
+		  PASS arguments.callee is the function itself.
+		  */
+
+
+
+
+		</script>
+	</body>
+</html>

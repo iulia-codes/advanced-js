@@ -1,0 +1,98 @@
+<html>
+	<body>
+		<script type="text/javascript">
+
+			// 01. How similar are functions and objects?
+			var obj = {};
+			var fn = function(){};
+			assert( obj && fn, "Both the object and function exist." );
+			/* Result 01
+			 PASS Both the object and function exist.
+			*/
+
+			// 02.How similar are functions and objects?
+			var obj = {};
+			var fn = function(){};
+			obj.prop = "some value";
+			fn.prop = "some value";
+			assert( obj.prop == fn.prop, "Both are objects, both have the property." );
+			/* Result 02
+			 PASS Both are objects, both have the property.
+			*/
+
+			//03. Is it possible to cache the return results from a function?
+			function getElements( name ) {
+				var results;
+
+				if ( getElements.cache[name] ) {
+					results = getElements.cache[name];
+				} else {
+					results = document.getElementsByTagName(name);
+					getElements.cache[name] = results;
+				}
+
+				return results;
+			}
+			getElements.cache = {};
+
+			log( "Elements found: ", getElements("pre").length );
+			log( "Cache found: ", getElements.cache.pre.length );
+
+			/* Result 03
+				LOG Elements found: 76
+				LOG Cache found: 76
+			*/
+
+
+			//04. QUIZ: Can you cache the results of this function?
+			function isPrime( num ) {
+				var prime = num != 1; // Everything but 1 can be prime
+				for ( var i = 2; i < num; i++ ) {
+					if ( num % i == 0 ) {
+						prime = false;
+						break;
+					}
+				}
+				return prime;
+			}
+
+			assert( isPrime(5), "Make sure the function works, 5 is prime." );
+			assert( isPrime.cache[5], "Is the answer cached?" );
+			/* Result 04
+				1.PASS Make sure the function works, 5 is prime.
+				2.ERROR Cannot read property '5' of undefined
+			*/
+
+
+			//05. QUIZ: Can you cache the results of this function?
+			function isPrime( num ) {
+				if ( isPrime.cache[ num ] != null )
+					return isPrime.cache[ num ];
+
+				var prime = num != 1; // Everything but 1 can be prime
+				for ( var i = 2; i < num; i++ ) {
+					if ( num % i == 0 ) {
+						prime = false;
+						break;
+					}
+				}
+
+				isPrime.cache[ num ] = prime
+
+				return prime;
+			}
+
+			isPrime.cache = {};
+
+			assert( isPrime(5), "Make sure the function works, 5 is prime." );
+			assert( isPrime.cache[5], "Make sure the answer is cached." );
+			/* Result 05
+				1.PASS Make sure the function works, 5 is prime.
+				2.PASS Make sure the answer is cached.
+			*/
+
+
+		</script>
+
+	</body>
+</html>

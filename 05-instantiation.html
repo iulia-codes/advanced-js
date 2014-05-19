@@ -1,0 +1,162 @@
+<html>
+	<body>
+		<script type="text/javascript">
+
+			// 01. What does the new operator do?
+			function Ninja(){
+				this.name = "Ninja";
+			}
+
+			var ninjaA = Ninja();
+			assert( !ninjaA, "Is undefined, not an instance of Ninja." );
+
+			var ninjaB = new Ninja();
+			assert( ninjaB.name == "Ninja", "Property exists on the ninja instance." );
+			/* Result 01
+			  1.PASS Is undefined, not an instance of Ninja.
+				2.PASS Property exists on the ninja instance.
+			*/
+
+			// 02. We have a 'this' context that is a Ninja object.
+			function Ninja(){
+				this.swung = false;
+
+				// Should return true
+				this.swingSword = function(){
+					this.swung = !this.swung;
+					return this.swung;
+				};
+			}
+
+			var ninja = new Ninja();
+			assert( ninja.swingSword(), "Calling the instance method." );
+			assert( ninja.swung, "The ninja has swung the sword." );
+
+			var ninjaB = new Ninja();
+			assert( !ninjaB.swung, "Make sure that the ninja has not swung his sword." );
+			/* Result 02
+			 1.PASS Calling the instance method.
+			2.PASS The ninja has swung the sword.
+			3.PASS Make sure that the ninja has not swung his sword.
+			*/
+
+
+			//03. QUIZ: Add a method that gives a name to the ninja.
+			function Ninja(name){
+				// Implement!
+			}
+
+			var ninja = new Ninja("John");
+			assert( ninja.name == "John", "The name has been set on initialization" );
+
+			ninja.changeName("Bob");
+			assert( ninja.name == "Bob", "The name was successfully changed." );
+			/* Result 03
+			1.FAIL The name has been set on initialization
+			2.ERROR undefined is not a function
+			*/
+
+
+			//04. Add a new property and method to the object.
+			function Ninja(name){
+				this.changeName = function(name){
+					this.name = name;
+				};
+
+				this.changeName( name );
+			}
+
+			var ninja = new Ninja("John");
+			assert( ninja.name == "John", "The name has been set on initialization" );
+
+			ninja.changeName("Bob");
+			assert( ninja.name == "Bob", "The name was successfully changed." );
+			/* Result 04
+				1.PASS The name has been set on initialization
+				2.PASS The name was successfully changed.
+			*/
+
+
+			//05. What happens when we forget to use the new operator?
+			function User(first, last){
+				this.name = first + " " + last;
+			}
+
+			var user = User("John", "Resig");
+			assert( typeof user == "undefined", "Since new wasn't used, the instance is undefined." );
+			/* Result 05
+				PASS Since new wasn't used, the instance is undefined.
+			*/
+
+
+			//06. What happens when we forget to use the new operator? (cont.)
+			function User(first, last){
+				this.name = first + " " + last;
+			}
+
+			window.name = "Resig";
+			var user = User("John", name);
+
+			assert( name == "John Resig", "The name variable is accidentally overridden." );
+			/* Result 06
+				1.PASS The name variable is accidentally overridden.
+			*/
+
+			//07. We need to make sure that the new operator is always used.
+			function User(first, last){
+				if ( !(this instanceof User) )
+					return new User(first, last);
+
+				this.name = first + " " + last;
+			}
+
+			var name = "Resig";
+			var user = User("John", name);
+
+			assert( user, "This was defined correctly, even if it was by mistake." );
+			assert( name == "Resig", "The right name was maintained." );
+			/* Result 07
+				1.PASS This was defined correctly, even if it was by mistake.
+				2.PASS The right name was maintained.
+			*/
+
+
+			//08. QUIZ: Is there another, more generic, way of doing this?
+			function User(first, last){
+				if ( !(this instanceof ___) )
+					return new User(first, last);
+
+				this.name = first + " " + last;
+			}
+
+			var name = "Resig";
+			var user = User("John", name);
+
+			assert( user, "This was defined correctly, even if it was by mistake." );
+			assert( name == "Resig", "The right name was maintained." );
+			/* Result 08
+				1.ERROR ___ is not defined
+			*/
+
+			//09. QUIZ: Is there another, more generic, way of doing this?
+			function User(first, last){
+				if ( !(this instanceof arguments.callee) )
+					return new User(first, last);
+
+				this.name = first + " " + last;
+			}
+
+			var name = "Resig";
+			var user = User("John", name);
+
+			assert( user, "This was defined correctly, even if it was by mistake." );
+			assert( name == "Resig", "The right name was maintained." );
+			/* Result 09
+				1.PASS This was defined correctly, even if it was by mistake.
+				2.PASS The right name was maintained.
+			*/
+
+		</script>
+
+	</body>
+</html>

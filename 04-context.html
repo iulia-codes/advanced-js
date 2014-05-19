@@ -1,0 +1,102 @@
+<html>
+	<body>
+		<script type="text/javascript">
+
+			// 01. What happens if a function is an object property?
+			var katana = {
+				isSharp: true,
+				use: function(){
+					this.isSharp = !this.isSharp;
+				}
+			};
+			katana.use();
+			assert( !katana.isSharp, "Verify the value of isSharp has been changed." );
+			/* Result 01
+			 PASS Verify the value of isSharp has been changed.
+			*/
+
+			// 02.What exactly does context represent?
+			function katana(){
+				this.isSharp = true;
+			}
+			katana();
+			assert( isSharp === true, "A global object now exists with that name and value." );
+
+			var shuriken = {
+				toss: function(){
+					this.isSharp = true;
+				}
+			};
+			shuriken.toss();
+			assert( shuriken.isSharp === true, "When it's an object property, the value is set within the object." );
+			/* Result 02
+			 1.PASS A global object now exists with that name and value.
+			2.PASS When it's an object property, the value is set within the object.
+			*/
+
+
+			//03. How can we change the context of a function?
+			var object = {};
+			function fn(){
+				return this;
+			}
+			assert( fn() == this, "The context is the global object." );
+			assert( fn.call(object) == object, "The context is changed to a specific object." );
+			/* Result 03
+				1.PASS The context is the global object.
+			2.PASS The context is changed to a specific object.
+			*/
+
+
+			//04. Different ways of changing the context:
+			function add(a, b){
+				return a + b;
+			}
+			assert( add.call(this, 1, 2) == 3, ".call() takes individual arguments" );
+			assert( add.apply(this, [1, 2]) == 3, ".apply() takes an array of arguments" );
+			/* Result 04
+				1.PASS .call() takes individual arguments
+				2.PASS .apply() takes an array of arguments
+			*/
+
+
+			//05. QUIZ: How can we implement looping with a callback?
+			function loop(array, fn){
+				for ( var i = 0; i < array.length; i++ ) {
+					// Implement me!
+				}
+			}
+			var num = 0;
+			loop([0, 1, 2], function(value){
+				assert(value == num++, "Make sure the contents are as we expect it.");
+				assert(this instanceof Array, "The context should be the full array.");
+			});
+			/* Result 05
+				???
+			*/
+
+
+			//06. A possible solution for function looping:
+			function loop(array, fn){
+				for ( var i = 0; i < array.length; i++ )
+					fn.call( array, array[i], i );
+			}
+			var num = 0;
+			loop([0, 1, 2], function(value, i){
+				assert(value == num++, "Make sure the contents are as we expect it.");
+				assert(this instanceof Array, "The context should be the full array.");
+			});
+			/* Result 06
+				1.PASS Make sure the contents are as we expect it.
+				2.PASS The context should be the full array.
+				3.PASS Make sure the contents are as we expect it.
+				4.PASS The context should be the full array.
+				5.PASS Make sure the contents are as we expect it.
+				6.PASS The context should be the full array.
+			*/
+
+
+		</script>
+
+	</body>
+</html>

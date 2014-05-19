@@ -1,0 +1,170 @@
+<html>
+	<body>
+		<script type="text/javascript">
+
+			// 01. A basic closure.
+			var num = 10;
+
+			function addNum(myNum){
+				return num + myNum;
+			}
+
+			assert( addNum(5) == 15, "Add two numbers together, one from a closure." );
+			/* Result 01
+			  1.PASS Add two numbers together, one from a closure.
+			*/
+
+			// 02. But why doesn't this work?
+			var num = 10;
+
+			function addNum(myNum){
+				return num + myNum;
+			}
+
+			num = 15;
+
+			assert( addNum(5) == 15, "Add two numbers together, one from a closure." );
+			/* Result 02
+			  1.PASS Locate the smallest value.
+				2.PASS Locate the largest value.
+			*/
+
+
+			//03. Closures are frequently used for callbacks.
+			var results = jQuery("#results").html("<li>Loading...</li>");
+
+			jQuery.get("test.html", function(html){
+				results.html( html );
+				assert( results, "The element to append to, via a closure." );
+			});
+			/* Result 03
+				I'm from test.html!
+				PASS The element to append to, via a closure.
+			*/
+
+
+			//04.  They're also useful for timers.
+			var count = 0;
+
+			var timer = setInterval(function(){
+				if ( count < 5 ) {
+					log( "Timer call: ", count );
+					count++;
+				} else {
+					assert( count == 5, "Count came via a closure, accessed each step." );
+					assert( timer, "The timer reference is also via a closure." );
+					clearInterval( timer );
+				}
+			}, 100);
+			/* Result 04
+				LOG Timer call: 0
+				LOG Timer call: 1
+				LOG Timer call: 2
+				LOG Timer call: 3
+				LOG Timer call: 4
+				PASS Count came via a closure, accessed each step.
+				PASS The timer reference is also via a closure.
+			*/
+
+			//05. And they're also frequently used when attaching event listeners.
+			var count = 1;
+			var elem = document.createElement("li");
+			elem.innerHTML = "Click me!";
+			elem.onclick = function(){
+				log( "Click #", count++ );
+			};
+			document.getElementById("results").appendChild( elem );
+			assert( elem.parentNode, "Clickable element appended." );
+			/* Result 05
+				 Click me!
+				PASS Clickable element appended.
+				LOG Click # 1
+				LOG Click # 2
+				LOG Click # 3
+				LOG Click # 4
+				LOG Click # 5
+			*/
+
+
+			//06. Private properties, using closures.
+			function Ninja(){
+				var slices = 0;
+
+				this.getSlices = function(){
+					return slices;
+				};
+				this.slice = function(){
+					slices++;
+				};
+			}
+
+			var ninja = new Ninja();
+			ninja.slice();
+			assert( ninja.getSlices() == 1, "We're able to access the internal slice data." );
+			assert( ninja.slices === undefined, "And the private data is inaccessible to us." );
+			/* Result 06
+				PASS We're able to access the internal slice data.
+				PASS And the private data is inaccessible to us.
+			*/
+
+			//07.  QUIZ: What are the values of the variables?
+			var a = 5;
+			function runMe(a){
+				assert( a == ___, "Check the value of a." );
+
+				function innerRun(){
+					assert( b == ___, "Check the value of b." );
+					assert( c == ___, "Check the value of c." );
+				}
+
+				var b = 7;
+				innerRun();
+				var c = 8;
+			}
+			runMe(6);
+
+			for ( var d = 0; d < 3; d++ ) {
+				setTimeout(function(){
+					assert( d == ___, "Check the value of d." );
+				}, 100);
+			}
+			/* Result 07
+				1.ERROR ___ is not defined
+			*/
+
+
+			//08. The last one is quite tricky, we'll revisit it.
+			var a = 5;
+			function runMe(a){
+				assert( a == 6, "Check the value of a." );
+
+				function innerRun(){
+					assert( b == 7, "Check the value of b." );
+					assert( c == undefined, "Check the value of c." );
+				}
+
+				var b = 7;
+				innerRun();
+				var c = 8;
+			}
+			runMe(6);
+
+			for ( var d = 0; d < 3; d++ ) {
+				setTimeout(function(){
+					assert( d == 3, "Check the value of d." );
+				}, 100);
+			}
+			/* Result 08
+				PASS Check the value of a.
+				PASS Check the value of b.
+				PASS Check the value of c.
+				PASS Check the value of d.
+				PASS Check the value of d.
+				PASS Check the value of d.
+			*/
+
+
+		</script>
+
+	</body>
+</html>
